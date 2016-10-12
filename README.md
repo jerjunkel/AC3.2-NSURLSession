@@ -203,20 +203,68 @@ Now, we just need to return the `[InstaCats` with `return allTheCats`...
 Almost. 
 
 ---
-### 4. Callbacks
+### 4. Out of Order Operations (Concurrency)
 
-Networks can be unreliable, especially on a mobile device. 
-- explain request cycle (request, response, repeat)
-- slow connects result in longer loading times, but once the data is retrieved it's loaded on screen
-- a loading sign indicates that a request has not yet processed
-- but while that request is happening, you phone is doing its own thing while waiting for the response to come 
-- when the response arrives, your phone is alerted and the UI is updated
-- To work with asynchronous network requests, we need to make use of closure callbacks. 
-- As you recall, closures are just functions. using a closure as a callback we can delay execution of some function until we're notified that we have the data ready. 
+Concurrency in computer science refers to _order independent execution and handling_. More importantly, it also says that although the actions you take are out of order, you always get the same expected results at the end.
+
+For example, if you need to cook a pasta dish you could follow these broard instructions: 
+
+1. Add water to a pot, turn on the heat. 
+2. **Wait**
+3. When it starts boiling, add the pasta
+4. **Wait**
+5. Strain the pasta when its done cooking
+
+But doing things one after another like this, referred to as _serial_ execution, would take a very long time, despite the guarantee that everything necessary will be done by a certain time. Not only would it take a long time, there would be stretches of time where you were doing _nothing_... just standing there, staring at a pot of water. A much more efficient way of doing is through doing _concurrent_ operations:
+
+1. Add water to pot, turn on heat
+2. **While** water comes to a boil, chop ingredients for sauce
+3. Add pasta to boiling water
+4. **While** the the pasta cooks, add sauce ingredients to a pan 
+
+And if you have multiple burners on your stove, then it makes even more sense to do things in a concurrent manner.
+ 
+Well, computers kind of work the same way. It used to be that computers only had one "burner" (called a "single core" processor) available but now they have many more at their disposal ("multi-core" processors). The purpose of this is to do as many things as possible at the same time and allow the computer to bounce between tasks as needed.
+
+---
+### 5. Network Reuqests are Asynchronous 
+
+Networks can be unreliable, especially on a mobile device. And even when the network connection is good there's still a non-trivial amount of time needed for content, especially images and video, to load. Though, while that loading takes place your phone is still working, doing hundreds of other things. Though when the image or video finally does load, it appears on screen and you continue your browsing. In other words, thanks to concurrency your phone continue to add things to its burners while one of them waits for the "water" to boil. 
+
+More specifically, when we talk about concurrency in networking requests, it’s usually in the realm of **asynchronous** requests. An asynchronous request is similar to concurrency in that you start it, go do something else for a little bit, and then you get alerted when it is finished. In a kitchen, you may ask your sous chef to go prep some onions for your pasta sauce while you do something else. Then once they finish chopping, you get the chopped onions back. You don’t know exactly how long this is going to take the chef; you just know you need the onions and you can’t stop everything else you’re doing while you wait for them.
+ 
+Concurrency is a complicated topic, but Objective C and Swift make great strides towards you not having to worry about it too much. But, making network requests are always going to be done asynchronously because you can't stop other things your app is doing in order to wait for an unknown amount of time for a request to finish. You don't cook in serial, a restarant doesn't cook only one dish at a time, and your app will never only do one thing at a time. 
+
+#### The Network Cycle
+
+At a very basic level, a network request follows the following steps:
+1. Request is made
+2. Response is received after some time
+3. Application responds to response (either success or failure)
+4. Execution continues (another request could start, or an error alert shown if there was a problem)
+
+#### Callbacks
+
+A common pattern to "listen" for network request responses is through the use of closures, referred to as **callbacks**. You already know that you can pass functions as a parameter to another function; that's in essence all callback are. The twist here is that your closure is intended to be executed once your network request receives its response. So, it "waits" for the response to be retrieved while your app continues executing other code.
+
+Let's now look at how this affects our current project
+
+---
+### 6. Updating `makeInstaCats(apiEndpoint:) to use a callback
+
+The syntax is going to take a little getting used to, but in effect what we're doing is taking the previous return value (`[InstaCat]?`) and make it the single parameter in a closure that returns `Void`. 
 
 ```swift
-    class func makeInstaCats(apiEndpoint: String, callback: @escaping ([InstaCat]?) -> Void) {
-    } 
+  // original
+  // returns [InstaCat]?
+  class func makeInstaCats(apiEndpoint: String) -> [InstaCat]? {
+  }
+
+  // with callback
+  // closure with single parameter of [InstaCat], returning nothing. function now returns nothing
+  // just know for Swift 3, you need to include that @escaping keyword for callbacks
+  class func makeInstaCats(apiEndpoint: String, callback: @escaping ([InstaCat]?) -> Void) {
+  }
 ```
 
 Now with the function updated to use a callback closure, we can finish:
@@ -269,14 +317,26 @@ To verify all is working, back in `viewDidLoad`, comment out the code for gettin
 Awesome! The data printed out to console.. but nothing showed up in our table view? You just met one of the biggest issues you'll encounter with network calls: updating your UI when your data is ready. Here's the most common way to update your UI following an asynchronous network request:
 
 ```swift
-  DispatchQueue.main.async {
-    self.tableView.reloadData()
-  }
+        InstaCatFactory.makeInstaCats(apiEndpoint: instaCatEndpoint) { (instaCats: [InstaCat]?) in
+            if instaCats != nil {
+                for cat in instaCats! {
+                    print(cat.description)
+                      self.instaCats = instaCats!
+                      
+                      // update the UI
+                      DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                      }
+                }
+            }
+        }
+
 ```
 
 **For now, just know that this is what you need to do: wrap up your UI-updating code in `DispatchQueue.main.async`**
 
 ---
 ### 5. Exercise
+
 
 
