@@ -11,7 +11,7 @@ import UIKit
 
 /// Used to create `[InstaCat]`
 class InstaCatFactory {
-    
+
     static let manager: InstaCatFactory = InstaCatFactory()
     private init() {}
     
@@ -30,6 +30,42 @@ class InstaCatFactory {
         
         return instaCatsAll
     }
+    
+    class func makeInstaCats(apiEndpoint: String) -> [InstaCat]? {
+        
+        if let validInstaCatEndpoint: URL = URL(string: apiEndpoint) {
+            
+            // 1. NSURLSession/Configuration
+            let session = URLSession(configuration: URLSessionConfiguration.default)
+            
+            // 2. (optional)
+            // 3. dataTaskWithURL
+            session.dataTask(with: validInstaCatEndpoint) { (data: Data?, response: URLResponse?, error: Error?) in
+                
+                // 4. Error Check
+                if error != nil {
+                    print("Error encountered!: \(error!)")
+                }
+                
+                // 5. (optional)
+                // 6. Print the data
+                if let validData: Data = data {
+                    print(validData)
+                    
+                    // 7. New class made from previous lesson
+                    let allTheCats: [InstaCat]? = InstaCatFactory.manager.getInstaCats(from: validData)
+                    return allTheCats
+                }
+            }.resume() // Other: Easily forgotten, but we need to call resume to actually launch the task
+        }
+        
+        return nil
+    }
+    
+    // MARK: - Network Request Helpers
+    
+    
+    // MARK: - Local File Helpers
     
     /// Gets the `URL` for a local file
     fileprivate func getResourceURL(from fileName: String) -> URL? {
@@ -53,6 +89,8 @@ class InstaCatFactory {
         return fileData
     }
     
+    
+    // MARK: - Data Parsing
     /// Creates `[InstaCat]` from valid `Data`
     fileprivate func getInstaCats(from jsonData: Data) -> [InstaCat]? {
         

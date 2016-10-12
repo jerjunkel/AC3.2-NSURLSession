@@ -14,6 +14,9 @@ class InstaCatTableViewController: UITableViewController {
     internal let instaCatJSONFileName: String = "InstaCats.json"
     internal var instaCats: [InstaCat] = []
 
+    // We're going to get a second set of data, but this time it will be from the web
+    internal let instaCatEndpoint: URL = URL(string: "https://api.myjson.com/bins/254uw")!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
