@@ -15,15 +15,29 @@ class InstaCatTableViewController: UITableViewController {
     internal var instaCats: [InstaCat] = []
 
     // We're going to get a second set of data, but this time it will be from the web
-    internal let instaCatEndpoint: URL = URL(string: "https://api.myjson.com/bins/254uw")!
+    internal let instaCatEndpoint: String = "https://api.myjson.com/bins/254uw"
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // In the MVC design architecture, a view controller should only coordinate model data to the views
         // So, we move our code for creating InstaCats out of this tableViewController
-        if let instaCatsAll: [InstaCat] = InstaCatFactory.makeInstaCats(fileName: instaCatJSONFileName) {
-            self.instaCats = instaCatsAll
+//        if let instaCatsAll: [InstaCat] = InstaCatFactory.makeInstaCats(fileName: instaCatJSONFileName) {
+//            self.instaCats = instaCatsAll
+//        }
+        
+        InstaCatFactory.makeInstaCats(apiEndpoint: instaCatEndpoint) { (instaCats: [InstaCat]?) in
+            if instaCats != nil {
+                for cat in instaCats! {
+                    print(cat.description)
+                }
+                
+                self.instaCats = instaCats!
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+                
+            }
         }
         
     }

@@ -4,6 +4,7 @@
 ### Readings:
 1. [`URLSession` - Apple](https://developer.apple.com/reference/foundation/urlsession) (just the "Overview section for now")
 2. [`NSURLSession` - Objc.io (video)](https://www.objc.io/issues/5-ios7/from-nsurlconnection-to-nsurlsession/)
+3. [Fundamentals of Callbacks for Swift Developers](https://www.andrewcbancroft.com/2016/02/15/fundamentals-of-callbacks-for-swift-developers/)
 
 ### Reference:
 2. [`URL` - Apple](https://developer.apple.com/reference/foundation/url) 
@@ -16,7 +17,7 @@
 ---
 ### 0. Goals 
 
-	- Understanding that `URL` truly is "universal" as it can refer to a file on your local machine, or a web URL
+  - Understanding that `URL` truly is "universal" as it can refer to a file on your local machine, or a web URL
   - Handling `json` data from web requests is exactly like dealing with a local `dictionary/json`
   - Reusuability of code makes building something up to the point much easier as we can reuse the same parsing function from the prior lesson here. 
 
@@ -54,7 +55,7 @@ Now, in our table view controller's `viewDidLoad` we replace our previous code w
 
 Start out by adding the following line to your tableviewcontroller:
 ```swift
-  internal let instaCatEndpoint: URL = URL(string: "https://api.myjson.com/bins/254uw")!
+  internal let instaCatEndpoint: String = "https://api.myjson.com/bins/254uw"
 ```
 (Plug in the URL into your browser too, just to see what comes up)
 
@@ -211,7 +212,71 @@ Networks can be unreliable, especially on a mobile device.
 - but while that request is happening, you phone is doing its own thing while waiting for the response to come 
 - when the response arrives, your phone is alerted and the UI is updated
 - To work with asynchronous network requests, we need to make use of closure callbacks. 
+- As you recall, closures are just functions. using a closure as a callback we can delay execution of some function until we're notified that we have the data ready. 
 
+```swift
+    class func makeInstaCats(apiEndpoint: String, callback: @escaping ([InstaCat]?) -> Void) {
+    } 
+```
 
+Now with the function updated to use a callback closure, we can finish:
+
+```swift
+class func makeInstaCats(apiEndpoint: String, callback: @escaping ([InstaCat]?) -> Void) {
+  if let validInstaCatEndpoint: URL = URL(string: apiEndpoint) {
+  
+    // 1. URLSession/Configuration
+    let session = URLSession(configuration: URLSessionConfiguration.default)
+  
+    // 2. dataTaskWithURL
+    session.dataTask(with: validInstaCatEndpoint) { (data: Data?, response: URLResponse?, error: Error?) in
+    
+      // 3. check for errors right away
+      if error != nil {
+        print("Error encountered!: \(error!)")
+      }
+    
+      // 4. printing out the data
+      if let validData: Data = data {
+        print(validData)
+        
+          // 5. reuse our code to make some cats from Data
+          let allTheCats: [InstaCat]? = InstaCatFactory.manager.getInstaCats(from: validData)
+          
+          callback(allTheCats)
+      }
+    }
+    
+  // 4a. ALSO THIS!
+  }.resume 
+}
+```
+
+To verify all is working, back in `viewDidLoad`, comment out the code for getting our local `InstaCat` and add in: 
+
+```swift
+        InstaCatFactory.makeInstaCats(apiEndpoint: instaCatEndpoint) { (instaCats: [InstaCat]?) in
+            if instaCats != nil {
+                for cat in instaCats! {
+                    print(cat.description)
+                    
+                    self.instaCats = instaCats!
+                }
+            }
+        }
+```
+
+Awesome! The data printed out to console.. but nothing showed up in our table view? You just met one of the biggest issues you'll encounter with network calls: updating your UI when your data is ready. Here's the most common way to update your UI following an asynchronous network request:
+
+```swift
+  DispatchQueue.main.async {
+    self.tableView.reloadData()
+  }
+```
+
+**For now, just know that this is what you need to do: wrap up your UI-updating code in `DispatchQueue.main.async`**
+
+---
+### 5. Exercise
 
 

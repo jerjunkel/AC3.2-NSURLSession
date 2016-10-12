@@ -31,7 +31,7 @@ class InstaCatFactory {
         return instaCatsAll
     }
     
-    class func makeInstaCats(apiEndpoint: String) -> [InstaCat]? {
+    class func makeInstaCats(apiEndpoint: String, callback: @escaping ([InstaCat]?) -> Void) {
         
         if let validInstaCatEndpoint: URL = URL(string: apiEndpoint) {
             
@@ -54,18 +54,13 @@ class InstaCatFactory {
                     
                     // 7. New class made from previous lesson
                     let allTheCats: [InstaCat]? = InstaCatFactory.manager.getInstaCats(from: validData)
-                    return allTheCats
+                    
+                    callback(allTheCats)
                 }
             }.resume() // Other: Easily forgotten, but we need to call resume to actually launch the task
         }
-        
-        return nil
     }
-    
-    // MARK: - Network Request Helpers
-    
-    
-    // MARK: - Local File Helpers
+
     
     /// Gets the `URL` for a local file
     fileprivate func getResourceURL(from fileName: String) -> URL? {
