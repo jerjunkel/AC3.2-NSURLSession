@@ -202,7 +202,9 @@ func getInstaCats(from apiEndpoint: String) -> [InstaCat]? {
 
 Now, we just need to return the `[InstaCats]` with `return allTheCats`...
 
-`Unexpected non-void return value in void function` (screenshot)
+![Non-void return error](http://imgur.com/9z1Zls4l.png)
+
+`Unexpected non-void return value in void function`
 
 Almost. 
 
@@ -327,10 +329,13 @@ The syntax is going to take a little getting used to, but in effect what we're d
   // with callback
   // closure with single parameter of [InstaCat], returning nothing. function now returns nothing
   // ****** just know for Swift 3, you need to include that `@escaping` keyword for callbacks *****
-  // ****** if you forget it, don't worry, Xcode will give you an error and ask to correct it for you ******
+  // ****** if you forget it, don't worry, Xcode will give you an error and ask to correct it for you (see screenshot) ******
   func getInstaCats(apiEndpoint: String, callback: @escaping ([InstaCat]?) -> Void) {
   }
 ```
+
+![Escaping Closure Warning](http://i.imgur.com/4x4UE8h.png)
+
 
 Now with the function updated to use a callback closure, we can finish:
 
@@ -381,7 +386,7 @@ To verify all is working, back in `viewDidLoad`, comment out the code for gettin
             }
         }
 ```
-
+![Finished - exactly like NSURL lesson](http://imgur.com/hGB5kzam.png)
 ---
 ### 5. Exercise
 
