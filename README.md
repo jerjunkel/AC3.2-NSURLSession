@@ -7,8 +7,7 @@
 3. [Fundamentals of Callbacks for Swift Developers](https://www.andrewcbancroft.com/2016/02/15/fundamentals-of-callbacks-for-swift-developers/)
 4. [Concurrency - Wiki](https://en.wikipedia.org/wiki/Concurrency_%28computer_science%29)
 5. [Concurrency - Objc.io](https://www.objc.io/issues/2-concurrency/concurrency-apis-and-pitfalls/)
-6. 
- Concurrency’s relation to Async Network requests (scroll down): https://www.objc.io/issues/2-concurrency/common-background-practices/
+6. [Concurrency’s relation to Async Network requests (scroll down)](https://www.objc.io/issues/2-concurrency/common-background-practices/)
 7. [Great talk on networking - Objc.io](https://talk.objc.io/episodes/S01E01-networking) (a bit advanced! uses flatmap, generics, computed properties and closure as properties) 
 
 ### Reference:
@@ -34,7 +33,7 @@ In MVC a (view) controller is only meant to coordinate data in the model and use
 1. The `InstaCat` struct has been moved into its own file
 2. The code used to retrieve `URL` info and parse `Data` into `InstaCat` has been moved into its own class, `InstaCatFactory`
 3. `InstaCatFactory` communicates publicly through the class function `makeInstaCats(fileName:)`, which accepts a `String` parameter that represents the name of the file that contains our `json`
-  4. Since we want to treat our factory as a "black box", we make functions we used last time to be `fileprivate`, meaning the scope of those functions are limited to the `.swift` file they are in. 
+  4. Since we want to treat our factory as a "black box", we make some of the functions we used last time to be `fileprivate`, meaning the scope of those functions are limited to the `.swift` file they are in. 
   
 
 > #### *The more you know*: The Singleton
@@ -76,22 +75,22 @@ To locate a file on the internet, we need to use `URLSession` to query for the d
 
 ---
 ### 3. URLSession 
-To our `InstaCatFactory`, add 
 
+To our `InstaCatTableViewController`, add 
 ```swift
-class func makeInstaCats(apiEndpoint: String) -> [InstaCat]? {
-  if let validInstaCatEndpoint: URL = URL(string: apiEndpoint) {
+    func getInstaCats(from apiEndpoint: String) -> [InstaCat]? {
+      if let validInstaCatEndpoint: URL = URL(string: apiEndpoint) {
   
-  }
-  
-}
+      }
+
+    }
 ```
 
 Every web request begins with a `URLSession`, which gets instatiated with a specified `URLSessionConfiguration`. 
   - For our purposes, we will only ever use `URLSessionConfiguration.default`
 
 ```swift
-class func makeInstaCats(apiEndpoint: String) -> [InstaCat]? {
+func getInstaCats(from apiEndpoint: String) -> [InstaCat]? {
   if let validInstaCatEndpoint: URL = URL(string: apiEndpoint) {
 
     // 1. URLSession/Configuration
@@ -104,7 +103,7 @@ class func makeInstaCats(apiEndpoint: String) -> [InstaCat]? {
 We then use the `dataTask(with:)` method of `URLSession` to initiate our request
 
 ```swift
-class func makeInstaCats(apiEndpoint: String) -> [InstaCat]? {
+func getInstaCats(from apiEndpoint: String) -> [InstaCat]? {
   if let validInstaCatEndpoint: URL = URL(string: apiEndpoint) {
   
     // 1. URLSession/Configuration
@@ -123,7 +122,7 @@ class func makeInstaCats(apiEndpoint: String) -> [InstaCat]? {
 Best practices says to check for errors first
 
 ```swift
-class func makeInstaCats(apiEndpoint: String) -> [InstaCat]? {
+func getInstaCats(from apiEndpoint: String) -> [InstaCat]? {
   if let validInstaCatEndpoint: URL = URL(string: apiEndpoint) {
   
     // 1. URLSession/Configuration
@@ -144,7 +143,7 @@ class func makeInstaCats(apiEndpoint: String) -> [InstaCat]? {
 At this point, we could check to see if we have any data being returned and print it out...
 
 ```swift
-class func makeInstaCats(apiEndpoint: String) -> [InstaCat]? {
+func getInstaCats(from apiEndpoint: String) -> [InstaCat]? {
   if let validInstaCatEndpoint: URL = URL(string: apiEndpoint) {
   
     // 1. URLSession/Configuration
@@ -160,7 +159,7 @@ class func makeInstaCats(apiEndpoint: String) -> [InstaCat]? {
     
       // 4. printing out the data
       if let validData: Data = data {
-        print(validData)
+        print(validData) // not of much use other than to tell us that data does exist
       }
     }
   
@@ -173,7 +172,7 @@ You're almost always going to forget to add `.resume()` at first and until you c
 Anyhow that doesn't give us much information as the data is still in its raw encoded form. Now, in theory the `Data` we're getting back is *exactly* the same at if we were accessing the data from `InstaCat.json`... soo... 
 
 ```swift
-class func makeInstaCats(apiEndpoint: String) -> [InstaCat]? {
+func getInstaCats(from apiEndpoint: String) -> [InstaCat]? {
   if let validInstaCatEndpoint: URL = URL(string: apiEndpoint) {
   
     // 1. URLSession/Configuration
@@ -201,11 +200,67 @@ class func makeInstaCats(apiEndpoint: String) -> [InstaCat]? {
 }
 ```
 
-Now, we just need to return the `[InstaCats` with `return allTheCats`...
+Now, we just need to return the `[InstaCats]` with `return allTheCats`...
 
-`Unexpected non-void return value in void function`
+`Unexpected non-void return value in void function` (screenshot)
 
 Almost. 
+
+Hmm, ok look like we can't `return` from this block because the functions signature isn't expecting it. We're going to need to make some changes to the function to have it function correctly. For one, we can remove the `return` value and just do our updating work in the tableview controller directly.
+
+```swift
+  func getInstaCats(from apiEndpoint: String) { // <<< returns Void
+    if let validInstaCatEndpoint: URL = URL(string: apiEndpoint) {
+            
+       // 1. URLSession/Configuration
+      let session = URLSession(configuration: URLSessionConfiguration.default)
+  
+      // 2. dataTaskWithURL
+      session.dataTask(with: validInstaCatEndpoint) { (data: Data?, response: URLResponse?, error: Error?) in
+    
+      // 3. check for errors right away
+      if error != nil {
+        print("Error encountered!: \(error!)")
+      }
+    
+      // 4. printing out the data
+      if let validData: Data = data {
+        print(validData)
+        
+        // 5. reuse our code to make some cats from Data
+        
+        // 6. if we're able to get non-nil [InstaCat], set our variable and reload the data
+        if let allTheCats: [InstaCat] = InstaCatFactory.manager.getInstaCats(from: validData) {
+          self.instaCats = allTheCats
+          self.tableView.reloadData()
+        }
+      }
+      }.resume() // Other: Easily forgotten, but we need to call resume to actually launch the task
+    }
+  }
+```
+
+And lastly, add this to `viewDidLoad`:
+
+```swift
+  self.getInstaCats(from: instaCatEndpoint)
+```
+Rerun the project... Awesome! The data printed out to console.. but nothing showed up in our table view? You just met one of the biggest issues you'll encounter with network calls: updating your UI when your data is ready. Here's the most common way to update your UI following a network request:
+
+```swift
+    // update the UI by wrapping the UI-updating code inside of a DispatchQueue closure
+    DispatchQueue.main.async {
+      self.tableView.reloadData()
+    }
+```
+
+**For now, just know that this is what you need to do: wrap up your UI-updating code in `DispatchQueue.main.async`**
+
+All should be well now: your request is made, data is retrieved and your tableview's UI reloads. But you might be left with some questions:
+
+1. Why didn't we follow the MVC design pattern and put this in `[InstaCatFactory]`?
+  2. If we do move this into `[InstaCatFactory]`, how do we get the `[InstaCat]` array to the table view controller if we can't return a value?
+3. Why do we need to update the UI in such a special manner? 
 
 ---
 ### 4. Out of Order Operations (Concurrency)
@@ -243,39 +298,44 @@ Concurrency is a complicated topic, but Objective C and Swift make great strides
 #### The Network Cycle
 
 At a very basic level, a network request follows the following steps:
-1. Request is made
-2. Response is received after some time
-3. Application responds to response (either success or failure)
+
+1. `Request` is made
+2. `Response` is received after some time
+3. Application responds to response (either `success` or `failure`)
 4. Execution continues (another request could start, or an error alert shown if there was a problem)
 
 #### Callbacks
 
-A common pattern to "listen" for network request responses is through the use of closures, referred to as **callbacks**. You already know that you can pass functions as a parameter to another function; that's in essence all callback are. The twist here is that your closure is intended to be executed once your network request receives its response. So, it "waits" for the response to be retrieved while your app continues executing other code.
+A common pattern to "listen" for **network** responses is through the use of closures, referred to as **callbacks**. You already know that you can pass functions as a parameter to another function; that's in essence all callback are. The twist here is that your closure is intended to be executed once your network request receives its response. So, it "waits" for the response to be retrieved while your app continues executing other code. Not only this, but it's important to think about this: the "lifetime" of the closure you pass into a function in this manner can "outlive" the "lifetime" of the function it's being passed to. In other words, this **closure** enters a time machine where time stands still until the network request finishes. In the meanwhile, the rest of the function goes through each line of its code and finishes execution, unaware of the closure in the time machine. When the network call does finish, the **callback** gets the results and exits the time chamber. 
 
 Let's now look at how this affects our current project
 
 ---
-### 6. Updating `makeInstaCats(apiEndpoint:) to use a callback
+### 6. Updating `getInstaCats(apiEndpoint:) to use a callback
 
 The syntax is going to take a little getting used to, but in effect what we're doing is taking the previous return value (`[InstaCat]?`) and make it the single parameter in a closure that returns `Void`. 
 
 ```swift
   // original
-  // returns [InstaCat]?
-  class func makeInstaCats(apiEndpoint: String) -> [InstaCat]? {
+  func getInstaCats(apiEndpoint: String) -> [InstaCat]? {
+  }
+  
+  // updating with no return
+  func getInstaCats(apiEndpoint: String) {
   }
 
   // with callback
   // closure with single parameter of [InstaCat], returning nothing. function now returns nothing
-  // just know for Swift 3, you need to include that @escaping keyword for callbacks
-  class func makeInstaCats(apiEndpoint: String, callback: @escaping ([InstaCat]?) -> Void) {
+  // ****** just know for Swift 3, you need to include that `@escaping` keyword for callbacks *****
+  // ****** if you forget it, don't worry, Xcode will give you an error and ask to correct it for you ******
+  func getInstaCats(apiEndpoint: String, callback: @escaping ([InstaCat]?) -> Void) {
   }
 ```
 
 Now with the function updated to use a callback closure, we can finish:
 
 ```swift
-class func makeInstaCats(apiEndpoint: String, callback: @escaping ([InstaCat]?) -> Void) {
+func getInstaCats(apiEndpoint: String, callback: @escaping ([InstaCat]?) -> Void) {
   if let validInstaCatEndpoint: URL = URL(string: apiEndpoint) {
   
     // 1. URLSession/Configuration
@@ -308,40 +368,26 @@ class func makeInstaCats(apiEndpoint: String, callback: @escaping ([InstaCat]?) 
 To verify all is working, back in `viewDidLoad`, comment out the code for getting our local `InstaCat` and add in: 
 
 ```swift
-        InstaCatFactory.makeInstaCats(apiEndpoint: instaCatEndpoint) { (instaCats: [InstaCat]?) in
+        self.getInstaCats(apiEndpoint: instaCatEndpoint) { (instaCats: [InstaCat]?) in
             if instaCats != nil {
                 for cat in instaCats! {
                     print(cat.description)
                     
-                    self.instaCats = instaCats!
+                    DispatchQueue.main.async {
+                       self.instaCats = instaCats!
+                       self.tableview.reloadData()
+                    }
                 }
             }
         }
 ```
-
-Awesome! The data printed out to console.. but nothing showed up in our table view? You just met one of the biggest issues you'll encounter with network calls: updating your UI when your data is ready. Here's the most common way to update your UI following an asynchronous network request:
-
-```swift
-        InstaCatFactory.makeInstaCats(apiEndpoint: instaCatEndpoint) { (instaCats: [InstaCat]?) in
-            if instaCats != nil {
-                for cat in instaCats! {
-                    print(cat.description)
-                      self.instaCats = instaCats!
-                      
-                      // update the UI
-                      DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                      }
-                }
-            }
-        }
-
-```
-
-**For now, just know that this is what you need to do: wrap up your UI-updating code in `DispatchQueue.main.async`**
 
 ---
 ### 5. Exercise
 
+(Proof of concept)
+Add a `print` statement on the line just after `}.resume` along with a `print` statment just before you call `callback(allTheCats)`. Check to see which one gets printed first to console. This should help illustrate how the closure "outlives" the function.
 
+(Warm up)
+As we've learned, our callback extends the lifetime of the closure until at least the network requests finishes (in error or success). It's also what allows us to call this function from other classes. For this first exercise, refactor the code for `getInstaCat(from:callback:)` and move it into `InstaCatFactory` as a `class func`
 
