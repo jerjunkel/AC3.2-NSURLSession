@@ -387,6 +387,11 @@ To verify all is working, back in `viewDidLoad`, comment out the code for gettin
         }
 ```
 ![Finished - exactly like NSURL lesson](http://imgur.com/hGB5kzam.png)
+
+
+#### Visualization of the callback closure lifecycle
+![Closure Lifecycle](http://imgur.com/1gZ1rGy.png)
+
 ---
 ### 5. Exercise
 
