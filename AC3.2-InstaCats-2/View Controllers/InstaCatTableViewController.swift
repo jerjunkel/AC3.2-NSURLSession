@@ -25,7 +25,14 @@ class InstaCatTableViewController: UITableViewController {
 //        }
         
         
-        self.getInstaCats(from: instaCatEndpoint)
+        self.getInstaCats(from: instaCatEndpoint) { instaCat in
+            if let validCats: [InstaCat] = instaCat {
+                DispatchQueue.main.async{
+                    self.instaCats = validCats
+                    self.tableView.reloadData()
+                }
+            }
+        }
         
 //        InstaCatFactory.makeInstaCats(apiEndpoint: instaCatEndpoint) { (instaCats: [InstaCat]?) in
 //            if instaCats != nil {
@@ -43,7 +50,7 @@ class InstaCatTableViewController: UITableViewController {
         
     }
     
-    func getInstaCats(from apiEndpoint: String) {
+    func getInstaCats(from apiEndpoint: String, callback: @escaping (([InstaCat]?)->Void)) {
         if let validInstaCatEndpoint: URL = URL(string: apiEndpoint) {
             
             let session = URLSession(configuration: URLSessionConfiguration.default)
@@ -57,10 +64,8 @@ class InstaCatTableViewController: UITableViewController {
                 if let validData: Data = data {
                     print(validData)
                     
-                    if let allTheCats: [InstaCat] = InstaCatFactory.manager.getInstaCats(from: validData) {
-                        self.instaCats = allTheCats
-                        self.tableView.reloadData()
-                    }
+                    let allTheCats: [InstaCat]? = InstaCatFactory.manager.getInstaCats(from: validData)
+                    callback(allTheCats)
                 }
                 }.resume() // Other: Easily forgotten, but we need to call resume to actually launch the task
         }
