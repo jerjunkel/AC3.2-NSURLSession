@@ -87,7 +87,7 @@ class InstaCatFactory {
     
     // MARK: - Data Parsing
     /// Creates `[InstaCat]` from valid `Data`
-    fileprivate func getInstaCats(from jsonData: Data) -> [InstaCat]? {
+    internal func getInstaCats(from jsonData: Data) -> [InstaCat]? {
         
         do {
             let instaCatJSONData: Any = try JSONSerialization.jsonObject(with: jsonData, options: [])

@@ -20,27 +20,52 @@ class InstaCatTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // In the MVC design architecture, a view controller should only coordinate model data to the views
-        // So, we move our code for creating InstaCats out of this tableViewController
 //        if let instaCatsAll: [InstaCat] = InstaCatFactory.makeInstaCats(fileName: instaCatJSONFileName) {
 //            self.instaCats = instaCatsAll
 //        }
         
-        InstaCatFactory.makeInstaCats(apiEndpoint: instaCatEndpoint) { (instaCats: [InstaCat]?) in
-            if instaCats != nil {
-                for cat in instaCats! {
-                    print(cat.description)
-                }
-                
-                self.instaCats = instaCats!
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-                
-            }
-        }
+        
+        self.getInstaCats(from: instaCatEndpoint)
+        
+//        InstaCatFactory.makeInstaCats(apiEndpoint: instaCatEndpoint) { (instaCats: [InstaCat]?) in
+//            if instaCats != nil {
+//                for cat in instaCats! {
+//                    print(cat.description)
+//                }
+//                
+//                self.instaCats = instaCats!
+//                DispatchQueue.main.async {
+//                    self.tableView.reloadData()
+//                }
+//                
+//            }
+//        }
         
     }
+    
+    func getInstaCats(from apiEndpoint: String) {
+        if let validInstaCatEndpoint: URL = URL(string: apiEndpoint) {
+            
+            let session = URLSession(configuration: URLSessionConfiguration.default)
+
+            session.dataTask(with: validInstaCatEndpoint) { (data: Data?, response: URLResponse?, error: Error?) in
+                
+                if error != nil {
+                    print("Error encountered!: \(error!)")
+                }
+                
+                if let validData: Data = data {
+                    print(validData)
+                    
+                    if let allTheCats: [InstaCat] = InstaCatFactory.manager.getInstaCats(from: validData) {
+                        self.instaCats = allTheCats
+                        self.tableView.reloadData()
+                    }
+                }
+                }.resume() // Other: Easily forgotten, but we need to call resume to actually launch the task
+        }
+    }
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
