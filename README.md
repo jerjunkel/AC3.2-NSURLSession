@@ -428,3 +428,13 @@ Just because I like cats (like, I *really* like them), doesn't meaan you should 
 Your final version should look like this: 
 
 ![Final InstaDogs](http://imgur.com/MWPig7Cl.png)
+
+*Further Work (optional, but challenging)*
+
+If you finish the above and want to continue with this, try the following:
+
+1. In a real world scenario, it is possible that the `json` your app is going to receive ends up being malformed (perhaps the server team makes a change your app isn't ready for). Rewrite the implementation of `struct InstaDog` to make it `throw` in the event that it cannot parse out the `json`. 
+  - To test this, create your own mock `json` on myjson.com and change the endpoint for your `InstaDogFactory` to this new `json`.
+2. Sort the `InstaDog` section by either `numberOfPosts`, `followers` or `following`. You must accomplish the following:
+  - Create an `enum` called `InstaDogSort` with three cases: `posts, followers, following`
+  - Add a `static func` to `InstaDog` that accepts parameters of `[InstaDog]` and `InstaDogSort`, and has a return of value type `[InstaDog]`
