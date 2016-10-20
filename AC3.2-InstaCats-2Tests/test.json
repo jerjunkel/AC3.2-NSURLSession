@@ -23,5 +23,19 @@
           "name" : "Grump Cat",
           "instagram" : "https://www.instagram.com/grump_cat_/?hl=en"
         }
+    ],
+    
+    "dogs": [
+        {
+             "dog_id": "001",
+             "name": "Men's Wear Dog",
+             "instagram": "https://www.instagram.com/mensweardog/",
+             "imageName": "mens_wear_dog.jpg",
+             "stats": {
+             "followers": "283091",
+             "following": "269",
+             "posts": "518"
+             }
+        }
     ]
 }
