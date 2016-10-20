@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		149F30851DB8530800B706F6 /* InstaDog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 149F30841DB8530800B706F6 /* InstaDog.swift */; };
+		149F30871DB854B500B706F6 /* InstaDogFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 149F30861DB854B500B706F6 /* InstaDogFactory.swift */; };
 		14CBA2DB1DADA28C003A33FD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CBA2DA1DADA28C003A33FD /* AppDelegate.swift */; };
 		14CBA2DD1DADA298003A33FD /* InstaCatTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CBA2DC1DADA298003A33FD /* InstaCatTableViewController.swift */; };
 		14CBA2E11DADA2AE003A33FD /* InstaCats.json in Resources */ = {isa = PBXBuildFile; fileRef = 14CBA2DF1DADA2AE003A33FD /* InstaCats.json */; };
@@ -32,6 +34,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		149F30841DB8530800B706F6 /* InstaDog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InstaDog.swift; path = "AC3.2-InstaCats-2/Model/InstaDog.swift"; sourceTree = SOURCE_ROOT; };
+		149F30861DB854B500B706F6 /* InstaDogFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InstaDogFactory.swift; path = "AC3.2-InstaCats-2/InstaDogFactory.swift"; sourceTree = SOURCE_ROOT; };
 		14CBA2AE1DAC3AAB003A33FD /* AC3.2-InstaCats-2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AC3.2-InstaCats-2.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		14CBA2C21DAC3AAC003A33FD /* AC3.2-InstaCats-2Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AC3.2-InstaCats-2Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		14CBA2DA1DADA28C003A33FD /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "AC3.2-InstaCats-2/AppDelegate.swift"; sourceTree = SOURCE_ROOT; };
@@ -133,7 +137,9 @@
 			isa = PBXGroup;
 			children = (
 				14CBA2F11DADA69F003A33FD /* InstaCat.swift */,
+				149F30841DB8530800B706F6 /* InstaDog.swift */,
 				14CBA2F51DADA9FC003A33FD /* InstaCatFactory.swift */,
+				149F30861DB854B500B706F6 /* InstaDogFactory.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -249,6 +255,8 @@
 				14CBA2F21DADA69F003A33FD /* InstaCat.swift in Sources */,
 				14CBA2DB1DADA28C003A33FD /* AppDelegate.swift in Sources */,
 				14CBA2F61DADA9FC003A33FD /* InstaCatFactory.swift in Sources */,
+				149F30851DB8530800B706F6 /* InstaDog.swift in Sources */,
+				149F30871DB854B500B706F6 /* InstaDogFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
