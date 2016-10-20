@@ -82,4 +82,36 @@ class AC3_2_InstaCats_2Tests: XCTestCase {
         XCTAssertTrue(testFileInstaCats[2].instagramURL == URL(string: "https://www.instagram.com/grump_cat_/?hl=en"))
     }
 
+    // MARK: - InstaDogs Tests -
+    func testInitializerOfInstaDog() {
+//        let components = self.testFileName.components(separatedBy: ".")
+//        guard let fileURL = Bundle.main.url(forResource: components.first, withExtension: components.last) else {
+//            XCTFail()
+//            return
+//        }
+
+//        if let validData: Data = try? Data(contentsOf: fileURL) {
+//            if let instaDogs: [InstaDog] = InstaDogFactory.manager.getInstaDogs(from: validData) {
+
+//                guard let onlyInstaDog = instaDogs.first else {
+//                    XCTFail("InstaDogFactory should generate the correct number of instaDogs from test data. Expected: 1, Actual: \(instaDogs.count)")
+//                    return
+//                }
+
+                // properties
+//                XCTAssertTrue(onlyInstaDog.name == "Men's Wear Dog")
+//                XCTAssertTrue(onlyInstaDog.dogID == 001)
+//                XCTAssertTrue(onlyInstaDog.instagramURL == URL(string: "https://www.instagram.com/mensweardog/")!)
+//                XCTAssertTrue(onlyInstaDog.imageName == "mens_wear_dog.jpg")
+//                XCTAssertTrue(onlyInstaDog.followers > 0)
+//                XCTAssertTrue(onlyInstaDog.following > 0)
+//                XCTAssertTrue(onlyInstaDog.numberOfPosts > 0)
+
+                // functions
+//                XCTAssertTrue(onlyInstaDog.formattedStats() == "Posts: \(onlyInstaDog.numberOfPosts)   Followers: \(onlyInstaDog.followers)   Following:\(onlyInstaDog.following)")
+
+//                XCTAssertNotNil(onlyInstaDog.profileImage())
+//                XCTAssertTrue(onlyInstaDog.profileImage() == UIImage(named: onlyInstaDog.imageName))
+//            }
+        }
 }
