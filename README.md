@@ -396,8 +396,35 @@ To verify all is working, back in `viewDidLoad`, comment out the code for gettin
 ### 5. Exercise
 
 (Proof of concept)
+
 Add a `print` statement on the line just after `}.resume` along with a `print` statment just before you call `callback(allTheCats)`. Check to see which one gets printed first to console. This should help illustrate how the closure "outlives" the function.
 
 (Warm up)
+
 As we've learned, our callback extends the lifetime of the closure until at least the network requests finishes (in error or success). It's also what allows us to call this function from other classes. For this first exercise, refactor the code for `getInstaCat(from:callback:)` and move it into `InstaCatFactory` as a `class func`
 
+(For the dog lovers)
+Just because I like cats (like, I *really* like them), doesn't meaan you should always have to make a cat-related app. So, to give the `InstaDog`s some love, we're going to give them their own section in our table. Here's what you need to be sure you do:
+
+1. Look at the content in https://api.myjson.com/bins/58n98
+2. Create a new model `struct InstaDog`
+  - Refer to your tests for the properties and functions `InstaDog` should have
+3. Create a new class `class InstaDogFactory` modeled after `InstaCatFactory`
+  - Meaning, this class should use a singleton, `manager`
+  - This class will have two functions:
+    1. `class func makeInstaDogs(apiEndpoint: String, callback: @escaping ([InstaDog]?) -> Void)`
+    2. `internal func getInstaDogs(from jsonData: Data) -> [InstaDog]?`
+  - Make sure that you are able to get these classes to work properly (they should hit the endpoint, retrieve the data, and parse it out into 3 `InstaDog`)
+4. In the `InstaCatTableViewController` in storyboard, add a new prototype cell (be sure to give it an identifier). This prototype cell should be of type `subtitle`
+5. In `InstaCatTableViewController`, add new variables to keep track of:
+  1. Your new API endpoint
+  2. Your new `[InstaDog]`
+  3. Your cell identifier from storyboard
+6. Update `numberOfRows` and `numberOfSections` so that `InstaCats` and `InstaDogs` will be separated by section
+7. Add the delegate function `titleForHeaderInSection` and give each section an appropriate name 
+8. Update `cellForRow` to check for the `indexPath.section` and to use the correct prototype cell for each section.
+  - Take note that the `InstaDog` cells have an image and a specific format for their `detailLabel`
+
+Your final version should look like this: 
+
+![Final InstaDogs](http://imgur.com/MWPig7Cl.png)
