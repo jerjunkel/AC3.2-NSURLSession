@@ -19,6 +19,8 @@
 		14CBA2F21DADA69F003A33FD /* InstaCat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CBA2F11DADA69F003A33FD /* InstaCat.swift */; };
 		14CBA2F31DADA69F003A33FD /* InstaCat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CBA2F11DADA69F003A33FD /* InstaCat.swift */; };
 		14CBA2F61DADA9FC003A33FD /* InstaCatFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CBA2F51DADA9FC003A33FD /* InstaCatFactory.swift */; };
+		1A1B5A3B1DBD2C720041DA27 /* InstaDog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1B5A3A1DBD2C720041DA27 /* InstaDog.swift */; };
+		1A1B5A3D1DBD952F0041DA27 /* InstaDogFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1B5A3C1DBD952F0041DA27 /* InstaDogFactory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +48,8 @@
 		14CBA2EE1DADA2EE003A33FD /* test.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = test.json; path = "AC3.2-InstaCats-2Tests/test.json"; sourceTree = SOURCE_ROOT; };
 		14CBA2F11DADA69F003A33FD /* InstaCat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InstaCat.swift; path = "AC3.2-InstaCats-2/Model/InstaCat.swift"; sourceTree = SOURCE_ROOT; };
 		14CBA2F51DADA9FC003A33FD /* InstaCatFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InstaCatFactory.swift; path = "AC3.2-InstaCats-2/InstaCatFactory.swift"; sourceTree = SOURCE_ROOT; };
+		1A1B5A3A1DBD2C720041DA27 /* InstaDog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstaDog.swift; sourceTree = SOURCE_ROOT; };
+		1A1B5A3C1DBD952F0041DA27 /* InstaDogFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstaDogFactory.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +137,8 @@
 			isa = PBXGroup;
 			children = (
 				14CBA2F11DADA69F003A33FD /* InstaCat.swift */,
+				1A1B5A3A1DBD2C720041DA27 /* InstaDog.swift */,
+				1A1B5A3C1DBD952F0041DA27 /* InstaDogFactory.swift */,
 				14CBA2F51DADA9FC003A33FD /* InstaCatFactory.swift */,
 			);
 			name = Model;
@@ -249,6 +255,8 @@
 				14CBA2F21DADA69F003A33FD /* InstaCat.swift in Sources */,
 				14CBA2DB1DADA28C003A33FD /* AppDelegate.swift in Sources */,
 				14CBA2F61DADA9FC003A33FD /* InstaCatFactory.swift in Sources */,
+				1A1B5A3B1DBD2C720041DA27 /* InstaDog.swift in Sources */,
+				1A1B5A3D1DBD952F0041DA27 /* InstaDogFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

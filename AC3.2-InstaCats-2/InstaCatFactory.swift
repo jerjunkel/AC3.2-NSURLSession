@@ -12,6 +12,8 @@ import UIKit
 /// Used to create `[InstaCat]`
 class InstaCatFactory {
 
+    
+    //this is called a 'singeton' to use methods appwide
     static let manager: InstaCatFactory = InstaCatFactory()
     private init() {}
     
